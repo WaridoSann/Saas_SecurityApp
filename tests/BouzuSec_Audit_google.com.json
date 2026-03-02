@@ -1,0 +1,10 @@
+{
+    "cible": "google.com",
+    "domaine": "google.com",
+    "mode": "simple",
+    "date": "2026-03-02 17:25:54",
+    "reconnaissance": {
+        "whois": "   Domain Name: GOOGLE.COM\n   Registry Domain ID: 2138514_DOMAIN_COM-VRSN\n   Registrar WHOIS Server: whois.markmonitor.com\n   Registrar URL: http://www.markmonitor.com\n   Updated Date: 2019-09-09T15:39:04Z\n   Creation Date: 1997-09-15T04:00:00Z\n   Registry Expiry Date: 2028-09-14T04:00:00Z\n   Registrar: MarkMonitor Inc.\n   Registrar IANA ID: 292\n   Registrar Abuse Contact Email: abusecomplaints@markmonitor.com"
+    },
+    "vulnerabilites": []
+}
