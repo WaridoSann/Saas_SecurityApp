@@ -1,29 +1,26 @@
-# Saas_SecurityApp
+# Saas_SecurityApp (BouzuSec)
 
-Projet visant à réaliser une plateforme SaaS permettant de réaliser un audit de sécurité sur un site web.
+> **Branche : Livrables (V1)**
 
-## Structure du projet
+[cite_start]Projet visant à réaliser une plateforme SaaS permettant de réaliser un audit de sécurité sur un site web de manière automatisée et vulgarisée[cite: 250, 251].
 
-```
-.
-├── docs/           # Documentation du projet
-│   ├── architecture/   # Documentation de l'architecture
-│   ├── api/           # Documentation de l'API
-│   ├── user-guide/    # Guide d'utilisation
-│   └── development/   # Guide de développement
-├── src/            # Code source de l'application
-├── tests/          # Tests de l'application
-└── config/         # Fichiers de configuration
-```
+## 📁 Structure de cette branche
 
-## Documentation
+Cette branche contient la première version fonctionnelle de notre outil :
 
-La documentation complète du projet est disponible dans le dossier [docs/](docs/).
+* `html/` : Code source principal de l'application (Interface Web HTML/PHP, feuille de style CSS et l'orchestrateur Python).
+* `config/` : Fichiers de configuration du projet.
+* `docs/` : Documentation technique de l'architecture et du projet.
+* `tests/` : Scripts et environnements de tests.
 
-## Démarrage rapide
+## ✨ Fonctionnalités implémentées (V1)
+* Interface utilisateur claire et responsive.
+* Formulaire de ciblage nettoyant automatiquement les URL.
+* Liaison PHP -> Python pour l'exécution de commandes système sur le serveur (ex: `whois`).
+* Génération à la volée d'un rapport de diagnostic au format PDF via la librairie Python `fpdf`.
 
-À venir.
-
-## Contribution
-
-Les contributions sont les bienvenues ! Consultez le [guide de développement](docs/development/) pour plus d'informations.
+## 🚀 Démarrage rapide pour tester
+1. Transférez le contenu du dossier `html/` dans le répertoire de votre serveur web (ex: `/var/www/html/`).
+2. Assurez-vous d'avoir installé la librairie pour la génération des PDF sur votre machine/serveur :
+   ```bash
+   pip install fpdf
