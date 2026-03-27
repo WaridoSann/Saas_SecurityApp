@@ -1,0 +1,23 @@
+{
+    "cible": "127.0.0.1",
+    "mode": "avance",
+    "score": {
+        "energie_pourcentage": 37,
+        "note_sur_10": 3.7,
+        "niveau_anssi": "RISQUE ÉLEVÉ",
+        "details_radar": {
+            "osint": 3,
+            "reseau": 4,
+            "fichiers_caches": 0,
+            "configuration": 7,
+            "applicatif_zap": 0
+        }
+    },
+    "resultats_bruts": {
+        "whois": "L'analyse des registres de propriété indique que votre domaine est géré par l'entité non communiqué. \n\nBonne pratique : Vos données de contact sont protégées par un service d'anonymisation.",
+        "whatweb": "L'empreinte technologique est la signature logicielle de votre site. Nous avons identifié les composants suivants : Serveur Web Apache (Version 2.4.65), Système d'exploitation Debian Linux. \n\nAnalyse du risque : Exposer ces versions permet à un pirate de rechercher des failles publiques spécifiques (CVE). Il est vivement conseillé de masquer ces signatures techniques dans les fichiers de configuration du serveur.",
+        "nmap": "L'inspection exhaustive de votre infrastructure a permis d'identifier les points d'entrée suivants, ouverts sur l'espace public :\n\n- Porte publique standard (http) : Utilisée pour afficher votre site web de manière non sécurisée.\n- Porte 8080 : Service logiciel spécifique détecté.\n- Porte 42289 : Service logiciel spécifique détecté.\n\nRecommandation stratégique : La règle d'or de la cybersécurité exige de fermer toute porte qui n'est pas strictement nécessaire à l'affichage de votre site web. Un pare-feu robuste doit être configuré.",
+        "gobuster": "Nous avons cherché à nous introduire dans l'arrière-boutique de votre site. Aucun document confidentiel n'a été trouvé. C'est un excellent point pour la confidentialité de vos opérations.",
+        "nikto_et_zap": "L'analyse approfondie de votre architecture a mis en lumière plusieurs vulnérabilités actives. Voici les enjeux concrets pour votre sécurité :\n\nTitre : Exposition des écrans de surveillance (fuite d'informations)\nExplication : Une négligence critique a été détectée : les écrans de contrôle internes de votre serveur sont visibles depuis l'extérieur. Un pirate peut s'y connecter pour voir en direct qui visite votre site et comment votre machine fonctionne.\n\nTitre : Tromperie sur le format des fichiers (mime-sniffing)\nExplication : Nous avons relevé une faille concernant le traitement des fichiers sur votre serveur. Actuellement, si un attaquant envoie un virus informatique déguisé en simple image, votre serveur essaiera d'en deviner le contenu, l'ouvrira, et déclenchera l'infection.\n\nTitre : Vulnérabilité de détournement de clics (clickjacking)\nExplication : Imaginez qu'un escroc place une vitre transparente par-dessus le terminal de paiement de votre magasin : vos clients pensent taper leur code pour vous payer, mais c'est l'escroc qui encaisse. Sur Internet, cette faille permet à un pirate de superposer votre site web sur le sien de manière invisible pour forcer vos utilisateurs à effectuer des actions dangereuses.\n\nRecommandation stratégique : Ces éléments sont des brèches ouvertes. Transmettez immédiatement ce rapport à votre direction technique pour appliquer les correctifs de sécurité modernes.\n\nAnalyse applicative en profondeur (OWASP ZAP) :\n\nLe module d'attaque applicative n'a pas pu générer son rapport. Le serveur a peut-être bloqué l'outil ou ZAP n'est pas bien installé."
+    }
+}

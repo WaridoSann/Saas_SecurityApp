@@ -1,0 +1,88 @@
+# module de scan des failles nikto
+import subprocess
+
+# ici on met le cerveau des failles avec des paragraphes fluides pour le patron
+# on evite les puces et on fait de belles phrases
+ANALYSE_FAILLES = {
+    "x_frame_options": {
+        "mots_cles": ["x-frame-options", "clickjacking", "framing"],
+        "texte": "Lors de nos tests, nous avons identifié une vulnérabilité liée à l'affichage de vos pages web, souvent appelée 'Détournement de clics'. Imaginez qu'un escroc place une vitre transparente par-dessus le terminal de paiement de votre magasin : vos clients pensent taper leur code pour vous payer, mais c'est l'escroc qui encaisse. Sur Internet, cette faille permet à un pirate de superposer votre site web sur le sien de manière invisible pour forcer vos utilisateurs à effectuer des actions dangereuses. Il est impératif d'interdire techniquement à d'autres sites de pouvoir encadrer vos pages."
+    },
+    "x_content_type": {
+        "mots_cles": ["x-content-type-options", "nosniff", "mime"],
+        "texte": "Nous avons relevé une faille concernant le traitement des fichiers sur votre serveur. Actuellement, si un attaquant envoie un virus informatique déguisé en simple image ou en document texte, votre serveur essaiera d'en deviner le contenu, l'ouvrira, et déclenchera l'infection. Il est urgent d'ordonner à votre infrastructure de ne jamais essayer de deviner la nature d'un fichier et de s'en tenir strictement à son format officiel de sécurité."
+    },
+    "server_status": {
+        "mots_cles": ["server-status", "server status", "apache status"],
+        "texte": "Une négligence critique de configuration a été détectée : les écrans de contrôle internes de votre serveur sont visibles depuis l'extérieur. C'est comme si vous aviez installé des caméras de surveillance pour vos locaux, mais que n'importe quel passant pouvait regarder les écrans depuis la rue. Un pirate peut s'y connecter pour voir en direct qui visite votre site et comment votre machine fonctionne. Il faut immédiatement restreindre cet accès à votre seule équipe technique."
+    },
+    "outdated_software": {
+        "mots_cles": ["outdated", "vulnerable", "obsolete", "out of date"],
+        "texte": "L'audit a révélé que certains logiciels fondamentaux qui font tourner votre site sont périmés. Dans le monde numérique, utiliser un logiciel obsolète revient à utiliser un coffre-fort dont le fabricant a publiquement annoncé que la serrure était défectueuse. Les pirates informatiques utilisent des robots pour chercher ces serrures vulnérables sur Internet en permanence. Une mise à jour complète de vos systèmes est une priorité absolue pour éviter une intrusion."
+    }
+}
+
+def faire_nikto(cible_url, mode_scan):
+    # on recupere juste le nom de domaine propre sans le http pour nikto
+    domaine = cible_url.replace("https://", "").replace("http://", "").split("/")[0]
+    
+    try:
+        # ici on ecoute les ordres de l orchestrateur pour preparer la bonne attaque
+        if mode_scan == "simple":
+            # mode rapide pour le top 10 owasp on vise juste les defauts de configuration
+            commande = ["nikto", "-h", domaine, "-Tuning", "123", "-maxtime", "45s", "-ask", "no"]
+            
+        elif mode_scan == "furtif":
+            # l orchestrateur a vu un waf donc on ajoute une pause de 2 secondes entre les requetes pour eviter le ban ip
+            commande = ["nikto", "-h", domaine, "-Pause", "2", "-maxtime", "3m", "-ask", "no"]
+            
+        elif "sql" in mode_scan or "phpmyadmin" in mode_scan:
+            # on a vu une base de donnees donc on force nikto a tester les injections sql avec le tuning numero 9
+            commande = ["nikto", "-h", domaine, "-Tuning", "9", "-maxtime", "3m", "-ask", "no"]
+            
+        else:
+            # scan avance normal
+            commande = ["nikto", "-h", domaine, "-maxtime", "3m", "-ask", "no"]
+            
+        # on lance la commande et on met un gros timeout pour pas bloquer tout le script
+        res = subprocess.run(commande, capture_output=True, text=True, timeout=200)
+        lignes = res.stdout.split('\n')
+        
+        # on fouille dans le resultat pour trouver nos failles
+        failles_trouvees = set()
+        for ligne in lignes:
+            ligne_minuscule = ligne.lower()
+            for cle, donnees in ANALYSE_FAILLES.items():
+                for mot_cle in donnees["mots_cles"]:
+                    if mot_cle in ligne_minuscule:
+                        failles_trouvees.add(cle)
+
+        # si le site est costaud et qu on ne trouve rien
+        if not failles_trouvees:
+            if mode_scan == "simple":
+                return "Notre balayage rapide de surface basé sur le Top 10 OWASP n'a détecté aucun défaut de configuration évident. Votre équipe technique a fait un travail remarquable sur les fondations de sécurité."
+            else:
+                return "Nous avons lancé des attaques approfondies sur votre infrastructure. La très bonne nouvelle est que notre outil n'a détecté aucune faille de configuration majeure dans le temps imparti."
+
+        # si on a trouve des trucs on prepare l introduction du rapport selon le mode
+        if mode_scan == "simple":
+            rapport_final = "Notre analyse ciblée sur les vulnérabilités courantes (Top 10 OWASP), notamment concernant la configuration de vos serveurs, a mis en lumière plusieurs problèmes. Voici le détail de ces failles :\n\n"
+        else:
+            rapport_final = "Notre analyse en profondeur a mis en lumière plusieurs vulnérabilités actives dans la configuration de votre site web. Voici le détail de ces failles, traduites en enjeux concrets pour votre entreprise :\n\n"
+        
+        # on ecrit chaque paragraphe d explication l un a la suite de l autre sans puces
+        for faille in failles_trouvees:
+            rapport_final += f"{ANALYSE_FAILLES[faille]['texte']}\n\n"
+            
+        # la petite conclusion qui va bien
+        rapport_final += "Ces découvertes ne signifient pas que vous avez déjà été piraté, mais elles représentent des brèches ouvertes pour d'éventuels attaquants. Nous vous conseillons de transmettre immédiatement ce document à vos développeurs pour qu'ils appliquent les correctifs."
+        
+        return rapport_final
+        
+    except subprocess.TimeoutExpired:
+        # si le pare feu a mis trop de temps a repondre
+        return "L'audit de vulnérabilité a pris trop de temps et a dû être stoppé. Cela signifie généralement que vos systèmes de défense bloquent les requêtes de nos outils."
+        
+    except Exception as e:
+        # erreur generale
+        return "Le module d'analyse active a rencontré une erreur de fonctionnement inattendue lors du scan."
